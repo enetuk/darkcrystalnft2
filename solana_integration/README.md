@@ -1,4 +1,5 @@
-metaplex and etc. Clone 
+Install here metaplex:
+
 
 git clone https://github.com/metaplex-foundation/metaplex.git
 

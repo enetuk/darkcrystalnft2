@@ -39,7 +39,7 @@ EOF
 
 sudo /etc/init.d/nginx start
 
-cat > ~/darkcrystalnft/config.json <<EOF
+cat > ~/darkcrystalnft2/config.json <<EOF
 
 {
 	"url_path": "https://$domain/nft/",

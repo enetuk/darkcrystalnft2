@@ -1,3 +1,7 @@
+# Настройка сервера
+
+Настройка сервера описана в файле docs/server_setup.md
+
 # Устанавливаем код
 
 cd ~/ && git clone https://enetuk@github.com/enetuk/darkcrystalnft2.git

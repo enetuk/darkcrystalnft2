@@ -1,5 +1,6 @@
-Install here metaplex:
+# Модули для работы с Solana
 
+Install here metaplex:
 
 git clone https://github.com/metaplex-foundation/metaplex.git
 

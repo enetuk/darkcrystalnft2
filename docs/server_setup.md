@@ -56,7 +56,6 @@ nvm install 14.17.6
 
 npm install -g yarn 
 
-
 # Устанавливаем код
 
 cd ~/ && git clone https://enetuk@github.com/enetuk/darkcrystalnft2.git

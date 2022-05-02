@@ -80,7 +80,7 @@ commander.program
         //Имя файла
         var fname = "lootbox" + mod + "_0";
         //Генерируем NFT-metadata
-        dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, parseInt(mod), 100);
+        dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, parseInt(mod),  dark_metadata.config["seller_fee_basis_points"]);
         console.log("mint NFT from metadata: " + dark_metadata.urlMetadata(gen_id, fname));
         await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0);
 });
@@ -106,16 +106,13 @@ commander.program
         const walletKeyPair = (0, accounts.loadWalletKey)(keypair);
         //Временная метка генерации
         var gen_id = new Date().getTime();
-        //Создаем папку для записи сгененрованных NFT-агентов
-        var fs = require('fs');
-        fs.mkdirSync(config["file_path"] + generation_time);
         //Соединяемся с блокчейном
         const solConnection = new anchor.web3.Connection((0, various.getCluster)(env));
 
         let collectionKey;
-        if (seriesName !== undefined) {
-            console.log("collection: " + seriesName);
-            collectionKey = new web3.PublicKey(seriesName);
+        if (collection !== undefined) {
+            console.log("collection: " + collection);
+            collectionKey = new web3.PublicKey(collection);
         }
 
         //Цикл по видам лутбокса (обычный - эпический)
@@ -124,11 +121,11 @@ commander.program
             for(var i = 0; i<Math.round(countNft*dark_metadata.modChances[mod]); i ++){
                 var fname = "lootbox" + mod + "_" + i;
 
-
-                //Генерируем NFT-metadata в папке (config["file_path"] + generation_time) 
-                dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, mod, 100);
-                //Отправляем данные в блокчейн
+                //Геренируем metadata
+                dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, mod, dark_metadata.config["seller_fee_basis_points"]);
+                console.log("mint NFT from metadata: " + dark_metadata.urlMetadata(gen_id, fname));
                 await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0);
+
 
 
 

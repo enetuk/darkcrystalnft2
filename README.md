@@ -21,3 +21,10 @@ cd ~/darkcrystalnft2 && ./install.sh
 ```bash
 cd ~/darkcrystalnft2/ && node index.js create_lootbox --keypair ~/.config/solana/id.json  --mod 0
 ```
+
+
+> Генерирование лутбоксов в количестве -count-nft  согласно вероятностям
+
+```bash
+cd ~/darkcrystalnft2/ && node index.js create_lootboxes --keypair ~/.config/solana/id.json  --count-nft 4
+```

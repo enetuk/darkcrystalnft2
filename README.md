@@ -28,3 +28,12 @@ cd ~/darkcrystalnft2/ && node index.js create_lootbox --keypair ~/.config/solana
 ```bash
 cd ~/darkcrystalnft2/ && node index.js create_lootboxes --keypair ~/.config/solana/id.json  --count-nft 4
 ```
+
+> Открыть лутбокс с адресом --mint-address
+
+```bash
+cd ~/darkcrystalnft2/ && node index.js open_lootbox --keypair ~/.config/solana/id.json  --mint-address 
+```
+
+
+

@@ -138,6 +138,10 @@ commander.program
 //Открытие лутбокса
 commander.program
     .command("open_lootbox")
+    //Сеть Solana: mainnet-beta, testnet, devnet
+    .option('-e, --env <string>', 'Solana cluster env name', 'devnet')
+    //Ключ кошелька
+    .requiredOption('-k, --keypair <path>', `Solana wallet location`, '--keypair not provided')
     //Адрес токена
     .option("-ma, --mint-address <string>")
     .action(async (directory, cmd) => {

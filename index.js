@@ -81,6 +81,7 @@ commander.program
         var fname = "lootbox" + mod + "_0";
         //Генерируем NFT-metadata
         dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, parseInt(mod), 100);
+        console.log("mint NFT from metadata: " + dark_metadata.urlMetadata(gen_id, fname));
         await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0);
 });
 

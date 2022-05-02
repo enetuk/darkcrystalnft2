@@ -208,7 +208,7 @@ commander.program
 
                //Отправляем данные в блокчейн
                 await mint_nft.updateMetadata(
-                    nft_public_key,
+                    mint_public_key,
                     solConnection,
                     walletKeyPair,
                     meta.data.uri + "?opened=1",

@@ -11,6 +11,7 @@ const mpl_token_metadata = require("./solana_integration/metaplex/js/node_module
 //Work with files
 const fs = require("fs");
 const { exec } = require('child_process');
+const fetch = require('node-fetch');
 
 
 //Game Realted

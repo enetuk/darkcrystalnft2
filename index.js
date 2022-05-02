@@ -147,49 +147,48 @@ commander.program
     .action(async (directory, cmd) => {
         //Получаем параметры запуска команды
         const { keypair, env, mintAddress } = cmd.opts();
-        log.info("Open lootbox " + mintAddress);
+        console.log("Open lootbox " + mintAddress);
         //Соединяемся с блокчейном
         const solConnection = new anchor.web3.Connection((0, various.getCluster)(env));
         //Объект с кошельком из файла с ключем
         const walletKeyPair = (0, accounts.loadWalletKey)(keypair);
 
     
-        //Получаем адрес создателя токена
-        var nft_public_key = new web3.PublicKey(nftAddress);
-        var metadataAccount = await accounts.getMetadata(nft_public_key);
+        var mint_public_key = new web3.PublicKey(mintAddress);
+        //Получаем аккаунт с metadata
+        var metadataAccount = await accounts.getMetadata(mint_public_key);
 
 
-
+        //Получаем metadata
         var info = await solConnection.getAccountInfo(metadataAccount);
-        var meta = mpl_token_metadata.deserialize(info.data);
+        var meta = mpl_token_metadata.MetadataData.deserialize(info.data);
 
-        //Получаем meta-дата лутбокса
+        //Получаем json-meta-дата лутбокса
         var metadata = await (await fetch(meta.data.uri, { method: 'GET' })).json();
 
-
+        //Получаем тип NFT
         var nft_type = metadata['attributes'].find(element => (element['trait_type'] == "Type"));
+        //Получаем модификатор (обычный...легендарный)
         var nft_mod = metadata['attributes'].find(element => (element['trait_type'] == "Mod"));
         //Проверяем создателя токена
-
+        //console.log(meta.data.creators);
         //Если создатель токена совпадает с адресом кошелька и создатель подписан
         var nft_creator = meta.data.creators.find(element => (element.address == walletKeyPair.publicKey.toBase58()));
-        console.log(nft_creator);
         if(nft_creator == undefined || nft_creator.verified != 1){
             //if(token_creator != walletKeyPair.publicKey.toBase58()){
-            log.error("Address " + nftAddress + " not created by " + walletKeyPair.publicKey.toBase58());
+            console.log("Address " + mint_public_key + " not created by " + walletKeyPair.publicKey.toBase58());
         }else 
         if(nft_type['value'] != "Lootbox"){
-            console.log("NFT " + nftAddress + " is not Lootbox");
-
+            console.log("NFT " + mint_public_key + " is not Lootbox");
         }else{
-            log.info("Generate agent from lootbox...")
+            console.log("Generate agent from lootbox...")
 
             //Меняем информацию о токене
             //Генерируем агента
             var fraction = dark_metadata.getRandomInt(5);
             console.log("fraction: " + fraction);
             //Генерируем агента
-            //ПОлучаем модификатор лутбокса
+            //ПОлучаем модификатор лутбокса из метадаты лутбокса (имя в индекс)
             var mod = dark_metadata.modNames.indexOf(nft_mod["value"]);
             if(nft_mod < 0){
                 console.log("Undefined mod " + nft_mod["value"]);
@@ -199,11 +198,12 @@ commander.program
                 //Генерируем нового агента
                 //Получаем локальный путь из URL
                 var agent_file_path = meta.data.uri.replace(config_json["url_path"], config_json["file_path"]);
+                //Путь к изобржению
+                var agent_image_path = agent_file_path.replace(".json", ".png");
+                //url изображения
+                var image_url = meta.data.uri.replace(".json", ".png") + "?opened=1";
                 //console.log(agent_file_path);
-                generateAgent(walletKeyPair, agent_file_path, agent_file_path.replace(".json", ".png"), meta.data.uri.replace(".json", ".png") + "?opened=1", fraction, mod, config_json["seller_fee_basis_points"]);
-
-
-                 //log.info(exec_res);
+                generateAgentJSON(walletKeyPair.publicKey.toBase58(), agent_image_path, image_url , fraction, mod, dark_metadata.config["seller_fee_basis_points"], agent_file_path);
 
                //Отправляем данные в блокчейн
                 await mint_nft.updateMetadata(
@@ -211,7 +211,8 @@ commander.program
                     solConnection,
                     walletKeyPair,
                     meta.data.uri + "?opened=1",
-                    collectionKey
+                    collectionKey,
+                    undefined
                 );
             };
         };

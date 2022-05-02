@@ -171,7 +171,11 @@ function generateLootboxJSON(
   //Сохраняем в файл JSON с информацией об агенте
   var fs = require('fs');
   //Создаем директорию (если нет)
-  fs.mkdirSync(require('path').dirname(pathMetadata(gen_id, fname)));
+  var dir = require('path').dirname(pathMetadata(gen_id, fname));
+  if(!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+  };
+
   //Записываем файл 
   fs.writeFileSync(pathMetadata(gen_id, fname), JSON.stringify(nft_hash), 'utf8');
 

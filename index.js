@@ -204,7 +204,7 @@ commander.program
                 //url изображения
                 var image_url = meta.data.uri.replace(".json", ".png") + "?opened=1";
                 //console.log(agent_file_path);
-                generateAgentJSON(walletKeyPair.publicKey.toBase58(), agent_image_path, image_url , fraction, mod, dark_metadata.config["seller_fee_basis_points"], agent_file_path);
+                dark_metadata.generateAgentJSON(walletKeyPair.publicKey.toBase58(), agent_image_path, image_url , fraction, mod, dark_metadata.config["seller_fee_basis_points"], agent_file_path);
 
                //Отправляем данные в блокчейн
                 await mint_nft.updateMetadata(

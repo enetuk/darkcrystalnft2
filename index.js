@@ -154,6 +154,8 @@ commander.program
         //Объект с кошельком из файла с ключем
         const walletKeyPair = (0, accounts.loadWalletKey)(keypair);
 
+
+        let collectionKey;
     
         var mint_public_key = new web3.PublicKey(mintAddress);
         //Получаем аккаунт с metadata

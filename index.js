@@ -198,7 +198,7 @@ commander.program
 
                 //Генерируем нового агента
                 //Получаем локальный путь из URL
-                var agent_file_path = meta.data.uri.replace(config_json["url_path"], config_json["file_path"]);
+                var agent_file_path = meta.data.uri.replace(dark_metadata.config["url_path"], dark_metadata.config["file_path"]);
                 //Путь к изобржению
                 var agent_image_path = agent_file_path.replace(".json", ".png");
                 //url изображения

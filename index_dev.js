@@ -305,6 +305,8 @@ commander.program
             var count = Math.round(countNft*dark_metadata.modChances[mod]);
             if(count > 0){
                 //Генерируем NFT-metadata
+                console.log("Count NFT Lootboxes " + dark_metadata.modNames[parseInt(mod)] + ": " + count)
+
                 dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, parseInt(mod),  dark_metadata.config["seller_fee_basis_points"]);
 
                 await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, count);

@@ -130,7 +130,7 @@ commander.program
                 dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, mod, dark_metadata.config["seller_fee_basis_points"]);
                 console.log("mint NFT from metadata: " + dark_metadata.urlMetadata(gen_id, fname));
                 var new_mint = await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0);
-                console.log(new_mint);
+                console.log("new mint address:" + new_mint.mint.toBase58());
 
 
 

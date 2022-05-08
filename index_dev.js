@@ -329,7 +329,7 @@ commander.program
                 //Выводим адрес NFT
                 console.log("new mint address:" + new_mint.mint.toBase58());
                 //Минтим NFT-токены на основе MasterEdition
-                var mint_cmd = "./solana_integration/metaplex-program-library/target/debug/metaplex-token-metadata-test-client mint_new_edition_from_master_edition_via_token --keypair " + keypair + " --url " + (0, various.getCluster)(env) + " --mint " + new_mint.mint.toBase58()
+                var mint_cmd = "./solana_integration/metaplex-program-library/token-metadata/target/debug/metaplex-token-metadata-test-client mint_new_edition_from_master_edition_via_token --keypair " + keypair + " --url " + (0, various.getCluster)(env) + " --mint " + new_mint.mint.toBase58()
                 console.log(mint_cmd)
                 var r = execSync(mint_cmd)
                 console.log(r)

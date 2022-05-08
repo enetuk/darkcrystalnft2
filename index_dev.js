@@ -305,8 +305,6 @@ commander.program
         console.log("Balance: " + (balance / 1000000000).toString() + " SOL"); 
 
 
-        various.getCluster)(env)
-        exit
 
         let collectionKey;
         if (collection !== undefined) {

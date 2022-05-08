@@ -11,7 +11,7 @@ const mpl_token_metadata = require("./solana_integration/metaplex/js/node_module
 
 //Work with files
 const fs = require("fs");
-const { exec } = require('child_process');
+const { exec, execSync } = require('child_process');
 const fetch = require('node-fetch');
 
 
@@ -129,7 +129,9 @@ commander.program
                 //Геренируем metadata
                 dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, mod, dark_metadata.config["seller_fee_basis_points"]);
                 console.log("mint NFT from metadata: " + dark_metadata.urlMetadata(gen_id, fname));
+                //Минтим NFT
                 var new_mint = await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0);
+                //Выводим адрес NFT
                 console.log("new mint address:" + new_mint.mint.toBase58());
 
 
@@ -297,6 +299,15 @@ commander.program
         //Соединяемся с блокчейном
         const solConnection = new anchor.web3.Connection((0, various.getCluster)(env));
 
+
+        //Получаем баланс
+        var balance = await solConnection.getBalance(walletKeyPair.publicKey)
+        console.log("Balance: " + (balance / 1000000000).toString() + " SOL"); 
+
+
+        various.getCluster)(env)
+        exit
+
         let collectionKey;
         if (collection !== undefined) {
             console.log("collection: " + collection);
@@ -312,17 +323,27 @@ commander.program
 
             var count = Math.round(countNft*dark_metadata.modChances[mod]);
             if(count > 0){
-                //Генерируем NFT-metadata
                 console.log("Count NFT Lootboxes " + dark_metadata.modNames[parseInt(mod)] + ": " + count)
-
+                //Генерируем NFT-metadata
                 dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, parseInt(mod),  dark_metadata.config["seller_fee_basis_points"]);
-
+                //Минтим NFT
                 var new_mint = await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, count);
-                console.log(new_mint)
+                //Выводим адрес NFT
+                console.log("new mint address:" + new_mint.mint.toBase58());
+                //Минтим NFT-токены на основе MasterEdition
+                var mint_cmd = "./solana_integration/metaplex-program-library/target/build/metaplex-token-metadata-test-client mint_new_edition_from_master_edition_via_token --keypair " + keypair + " --url " + various.getCluster)(env) + " --mint " + new_mint.mint.toBase58()
+                console.log(mint_cmd)
+                var r = execSync(mint_cmd)
+                console.log(r)
             };
 
 
         };
+
+        //Получаем баланс
+        var new_balance = await solConnection.getBalance(walletKeyPair.publicKey)
+        console.log("Balance: " + (new_balance / 1000000000).toString() + " SOL (change: " + ((new_balance - balance)/1000000000) + " SOL)"); 
+
   });
 
 commander.program.parse(process.argv);

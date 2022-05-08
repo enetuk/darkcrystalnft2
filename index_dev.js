@@ -116,6 +116,9 @@ commander.program
             console.log("collection: " + collection);
             collectionKey = new web3.PublicKey(collection);
         }
+        //Получаем баланс
+        var balance = await solConnection.getBalance(walletKeyPair.publicKey)
+        console.log("Balance: " + (balance / 1000000000).toString() + " SOL"); 
 
         //Цикл по видам лутбокса (обычный - эпический)
         for(var mod=0; mod<dark_metadata.modChances.length; mod++){
@@ -126,14 +129,18 @@ commander.program
                 //Геренируем metadata
                 dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, mod, dark_metadata.config["seller_fee_basis_points"]);
                 console.log("mint NFT from metadata: " + dark_metadata.urlMetadata(gen_id, fname));
-                await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0);
-
+                var new_mint = await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0);
+                console.log(new_mint);
 
 
 
             };
 
         };
+        //Получаем баланс
+        var new_balance = await solConnection.getBalance(walletKeyPair.publicKey)
+        console.log("Balance: " + (new_balance / 1000000000).toString() + " SOL (change: " + ((new_balance - balance)/1000000000) + " SOL)"); 
+
   });
 
 
@@ -266,27 +273,6 @@ commander.program
 });
 
 
-//Генерирование nft-лутбоксов по нужным вероятностям в количестве --cont-nft
-commander.program
-    .command("create_from_master")
-    //Сеть Solana: mainnet-beta, testnet, devnet
-    .option('-e, --env <string>', 'Solana cluster env name', 'devnet')
-    //Ключ кошелька
-    .requiredOption('-k, --keypair <path>', `Solana wallet location`, '--keypair not provided')
-    //Количество лутбоксов
-    .requiredOption("-m, --mint <number>")
-    .action(async (directory, cmd) => {
-        //Получаем параметры запуска команды
-        const { keypair, env, mint} = cmd.opts();
-        //Объект с кошельком из файла с ключем
-        const walletKeyPair = (0, accounts.loadWalletKey)(keypair);
-        const solConnection = new anchor.web3.Connection((0, various.getCluster)(env));
-
-        let collectionKey;
-
-        mpl_token_metadata.MintNewEditionFromMasterEditionViaTokenArgs
-
-})
 
 //Генерирование nft-лутбоксов по нужным вероятностям в количестве --cont-nft
 commander.program

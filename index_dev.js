@@ -8,6 +8,7 @@ const web3 = require("./solana_integration/metaplex/js/node_modules/@solana/web3
 const mpl_token_metadata = require("./solana_integration/metaplex/js/node_modules/@metaplex-foundation/mpl-token-metadata");
 
 
+
 //Work with files
 const fs = require("fs");
 const { exec } = require('child_process');
@@ -265,6 +266,27 @@ commander.program
 });
 
 
+//Генерирование nft-лутбоксов по нужным вероятностям в количестве --cont-nft
+commander.program
+    .command("create_from_master")
+    //Сеть Solana: mainnet-beta, testnet, devnet
+    .option('-e, --env <string>', 'Solana cluster env name', 'devnet')
+    //Ключ кошелька
+    .requiredOption('-k, --keypair <path>', `Solana wallet location`, '--keypair not provided')
+    //Количество лутбоксов
+    .requiredOption("-m, --mint <number>")
+    .action(async (directory, cmd) => {
+        //Получаем параметры запуска команды
+        const { keypair, env, mint} = cmd.opts();
+        //Объект с кошельком из файла с ключем
+        const walletKeyPair = (0, accounts.loadWalletKey)(keypair);
+        const solConnection = new anchor.web3.Connection((0, various.getCluster)(env));
+
+        let collectionKey;
+
+        mpl_token_metadata.MintNewEditionFromMasterEditionViaTokenArgs
+
+})
 
 //Генерирование nft-лутбоксов по нужным вероятностям в количестве --cont-nft
 commander.program
@@ -309,8 +331,8 @@ commander.program
 
                 dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, parseInt(mod),  dark_metadata.config["seller_fee_basis_points"]);
 
-                await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, count);
-
+                var new_mint = await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, count);
+                console.log(new_mint)
             };
 
 

@@ -326,13 +326,23 @@ commander.program
                 dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, parseInt(mod),  dark_metadata.config["seller_fee_basis_points"]);
                 //Минтим NFT
                 var new_mint = await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, count);
-                //Выводим адрес NFT
-                console.log("new mint address:" + new_mint.mint.toBase58());
-                //Минтим NFT-токены на основе MasterEdition
-                var mint_cmd = "./solana_integration/metaplex-program-library/token-metadata/target/debug/metaplex-token-metadata-test-client mint_new_edition_from_master_edition_via_token --keypair " + keypair + " --url " + (0, various.getCluster)(env) + " --mint " + new_mint.mint.toBase58()
-                console.log(mint_cmd)
-                var r = execSync(mint_cmd)
-                console.log(r)
+                //Выводим адрес master-NFT
+                console.log("new master mint address:" + new_mint.mint.toBase58());
+                var mint_n = 0;
+                //Чеканим NFT на основе Master Edition
+                while(mint_n < count){
+                    mint_n += 1;
+                    //Минтим NFT-токены на основе MasterEdition
+                    try {
+                        console.log("Mint #" + mint_n + " by " + new_mint.mint.toBase58());
+                        var mint_cmd = "./solana_integration/metaplex-program-library/token-metadata/target/debug/metaplex-token-metadata-test-client mint_new_edition_from_master_edition_via_token --keypair " + keypair + " --url " + (0, various.getCluster)(env) + " --mint " + new_mint.mint.toBase58();
+                        console.log(mint_cmd);
+                        var r = execSync(mint_cmd, {encoding: 'utf8'});
+                        console.log(r.toString())
+                    } catch (error) {
+                        console.error(`Failed to generate NFT: ${error.message}`);
+                    }
+                }
             };
 
 

@@ -59,6 +59,7 @@ const mintAsset = async (connection, walletKeypair, metadataLink, mutableMetadat
     instructions.push(spl_token_1.Token.createAssociatedTokenAccountInstruction(spl_token_1.ASSOCIATED_TOKEN_PROGRAM_ID, spl_token_1.TOKEN_PROGRAM_ID, mint.publicKey, userTokenAccoutAddress, wallet.publicKey, wallet.publicKey));
     // Create metadata
     const metadataAccount = await (0, accounts_1.getMetadata)(mint.publicKey);
+    console.log(data);
     instructions.push(...new mpl_token_metadata_1.CreateMetadataV2({ feePayer: wallet.publicKey }, {
         metadata: metadataAccount,
         metadataData: data,

@@ -1,4 +1,4 @@
-const mpl_token_metadata_1 = require("../solana_integration/metaplex/js/node_modules/@metaplex-foundation/mpl-token-metadata");
+const mpl_token_metadata_1 = require("../solana_integration/metaplex/js/packages/cli/node_modules/@metaplex-foundation/mpl-token-metadata");
 const anchor = require("../solana_integration/metaplex/js/node_modules/@project-serum/anchor");
 
 const spl_token_1 = require("../solana_integration/metaplex/js/node_modules/@solana/spl-token");

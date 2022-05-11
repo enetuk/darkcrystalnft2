@@ -16,11 +16,12 @@ const createMetadata = async (metadataLink, verifyCreators, collection, uses) =>
         metadata = await (await (0, node_fetch_1.default)(metadataLink, { method: 'GET' })).json();
     }
     catch (e) {
-        loglevel_1.default.debug(e);
-        loglevel_1.default.error('Invalid metadata at', metadataLink);
+        //loglevel_1.default.debug(e);
+        //loglevel_1.default.error('Invalid metadata at', metadataLink);
+        console.log('Invalid metadata at', metadataLink);
         return;
     }
-    return (0, exports.validateMetadata)({
+    return (0, mint_nft.validateMetadata)({
         metadata,
         uri: metadataLink,
         verifyCreators,
@@ -33,7 +34,7 @@ exports.createMetadata = createMetadata;
 
 const mintAsset = async (connection, walletKeypair, metadataLink, mutableMetadata = true, collection = null, maxSupply = 0, verifyCreators, use = null, receivingWallet = null) => {
     // Retrieve metadata
-    const data = await (0, exports.createMetadata)(metadataLink, verifyCreators, collection, use);
+    const data = await (0, mint_nft.createMetadata)(metadataLink, verifyCreators, collection, use);
     if (!data)
         return;
     // Create wallet from keypair

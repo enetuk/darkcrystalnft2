@@ -3,6 +3,7 @@ const anchor = require("../solana_integration/metaplex/js/node_modules/@project-
 
 const spl_token_1 = require("../solana_integration/metaplex/js/node_modules/@solana/spl-token");
 const web3_js_1 = require("../solana_integration/metaplex/js/node_modules/@solana/web3.js");
+const accounts_1 = require("../solana_integration/metaplex/js/packages/cli/build/helpers/accounts");
 
 const mint_nft = require("../solana_integration/metaplex/js/packages/cli/build/commands/mint-nft");
 

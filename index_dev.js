@@ -7,7 +7,7 @@ const commander = require("./solana_integration/metaplex/js/packages/cli/node_mo
 const web3 = require("./solana_integration/metaplex/js/node_modules/@solana/web3.js");
 const mpl_token_metadata = require("./solana_integration/metaplex/js/node_modules/@metaplex-foundation/mpl-token-metadata");
 
-
+const sft = require("./solana_integration/fungible_assets.js")
 
 //Work with files
 const fs = require("fs");
@@ -353,6 +353,71 @@ commander.program
         console.log("Balance: " + (new_balance / 1000000000).toString() + " SOL (change: " + ((new_balance - balance)/1000000000) + " SOL)"); 
 
   });
+
+
+
+//Генерирование nft-лутбоксов по нужным вероятностям в количестве --cont-nft
+commander.program
+    .command("create_lootboxes3")
+    //Сеть Solana: mainnet-beta, testnet, devnet
+    .option('-e, --env <string>', 'Solana cluster env name', 'devnet')
+    //Ключ кошелька
+    .requiredOption('-k, --keypair <path>', `Solana wallet location`, '--keypair not provided')
+    //Количество лутбоксов
+    .requiredOption("-cn, --count-nft <number>")
+    //Коллеция (PubKey). Коллекция - такой же NFT который должен быть сгенерирован
+    .option('-c, --collection <string>', 'Optional: Set this NFT as a part of a collection, Note you must be the update authority for this to work.')
+
+    .action(async (directory, cmd) => {
+        //Получаем параметры запуска команды
+        const { keypair, env, collection, countNft} = cmd.opts();
+        console.log("Generate " + countNft + " lootboxes...");
+        //Объект с кошельком из файла с ключем
+        const walletKeyPair = (0, accounts.loadWalletKey)(keypair);
+        //Временная метка генерации
+        var gen_id = new Date().getTime();
+        //Соединяемся с блокчейном
+        const solConnection = new anchor.web3.Connection((0, various.getCluster)(env));
+
+
+        //Получаем баланс
+        var balance = await solConnection.getBalance(walletKeyPair.publicKey)
+        console.log("Balance: " + (balance / 1000000000).toString() + " SOL"); 
+
+
+
+        let collectionKey;
+        if (collection !== undefined) {
+            console.log("collection: " + collection);
+            collectionKey = new web3.PublicKey(collection);
+        }
+
+        //Временная метка генерации
+        var gen_id = new Date().getTime();
+
+        //Цикл по видам лутбокса (обычный - эпический)
+        for(var mod=0; mod<dark_metadata.modChances.length; mod++){
+            var fname = "lootboxes" + mod;
+
+            var count = Math.round(countNft*dark_metadata.modChances[mod]);
+            if(count > 0){
+                console.log("Count NFT Lootboxes " + dark_metadata.modNames[parseInt(mod)] + ": " + count)
+                //Генерируем NFT-metadata
+                dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, parseInt(mod),  dark_metadata.config["seller_fee_basis_points"]);
+                //Минтим Fungible Assets
+
+                var new_mint = await (0, sft.mintAsset)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, count);
+            };
+
+
+        };
+
+        //Получаем баланс
+        var new_balance = await solConnection.getBalance(walletKeyPair.publicKey)
+        console.log("Balance: " + (new_balance / 1000000000).toString() + " SOL (change: " + ((new_balance - balance)/1000000000) + " SOL)"); 
+
+  });
+
 
 commander.program.parse(process.argv);
 

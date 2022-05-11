@@ -407,6 +407,9 @@ commander.program
                 //Минтим Fungible Assets
 
                 var new_mint = await (0, sft.mintAsset)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, count);
+                //Выводим адрес NFT
+                console.log("new mint address:" + new_mint.mint.toBase58());
+
             };
 
 

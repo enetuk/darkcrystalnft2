@@ -8,6 +8,29 @@ const accounts_1 = require("../solana_integration/metaplex/js/packages/cli/build
 const mint_nft = require("../solana_integration/metaplex/js/packages/cli/build/commands/mint-nft");
 
 
+
+const createMetadata = async (metadataLink, verifyCreators, collection, uses) => {
+    // Metadata
+    let metadata;
+    try {
+        metadata = await (await (0, node_fetch_1.default)(metadataLink, { method: 'GET' })).json();
+    }
+    catch (e) {
+        loglevel_1.default.debug(e);
+        loglevel_1.default.error('Invalid metadata at', metadataLink);
+        return;
+    }
+    return (0, exports.validateMetadata)({
+        metadata,
+        uri: metadataLink,
+        verifyCreators,
+        collection,
+        uses,
+    });
+};
+exports.createMetadata = createMetadata;
+
+
 const mintAsset = async (connection, walletKeypair, metadataLink, mutableMetadata = true, collection = null, maxSupply = 0, verifyCreators, use = null, receivingWallet = null) => {
     // Retrieve metadata
     const data = await (0, exports.createMetadata)(metadataLink, verifyCreators, collection, use);

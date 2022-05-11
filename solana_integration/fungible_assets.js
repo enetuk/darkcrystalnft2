@@ -43,7 +43,9 @@ const mintAsset = async (connection, walletKeypair, metadataLink, mutableMetadat
         mint: mint.publicKey,
         mintAuthority: wallet.publicKey,
     }).instructions);
+    console.log("2")
     instructions.push(spl_token_1.Token.createMintToInstruction(spl_token_1.TOKEN_PROGRAM_ID, mint.publicKey, userTokenAccoutAddress, wallet.publicKey, [], 1));
+    console.log("3")
     // Create master edition
 /*
     const editionAccount = await (0, accounts_1.getMasterEdition)(mint.publicKey);
@@ -59,6 +61,7 @@ const mintAsset = async (connection, walletKeypair, metadataLink, mutableMetadat
         maxSupply: new anchor.BN(maxSupply),
     }).instructions);
     */
+
     if (!mutableMetadata) {
         instructions.push(...new mpl_token_metadata_1.UpdateMetadataV2({}, {
             metadata: metadataAccount,
@@ -68,6 +71,7 @@ const mintAsset = async (connection, walletKeypair, metadataLink, mutableMetadat
             isMutable: false,
         }).instructions);
     }
+    print(4)
     if (receivingWallet) {
         const derivedAccount = await (0, accounts_1.getTokenWallet)(receivingWallet, mint.publicKey);
         const createdAccountIx = spl_token_1.Token.createAssociatedTokenAccountInstruction(spl_token_1.ASSOCIATED_TOKEN_PROGRAM_ID, spl_token_1.TOKEN_PROGRAM_ID, mint.publicKey, derivedAccount, receivingWallet, wallet.publicKey);

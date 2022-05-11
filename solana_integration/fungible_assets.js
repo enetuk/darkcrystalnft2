@@ -107,9 +107,9 @@ const mintAsset = async (connection, walletKeypair, metadataLink, mutableMetadat
     }
     // Force wait for max confirmations
     await connection.getParsedTransaction(res.txid, 'confirmed');
-    loglevel_1.default.info('NFT created', res.txid);
-    loglevel_1.default.info('\nNFT: Mint Address is ', mint.publicKey.toBase58());
-    loglevel_1.default.info('NFT: Metadata address is ', metadataAccount.toBase58());
+    //loglevel_1.default.info('NFT created', res.txid);
+    //loglevel_1.default.info('\nNFT: Mint Address is ', mint.publicKey.toBase58());
+    //loglevel_1.default.info('NFT: Metadata address is ', metadataAccount.toBase58());
     return { metadataAccount, mint: mint.publicKey };
 };
 exports.mintAsset = mintAsset;

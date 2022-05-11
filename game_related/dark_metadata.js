@@ -41,6 +41,9 @@ exports.classNames = classNames;
 const modNames = ["", "Rare ", "Legendary ", "Epic "];
 exports.modNames = modNames;
 
+//Символ лутбокса
+const modSymbols = ["DLB", "DLBR", "DLBL", "DLBE"]
+
 
 //Генерирует случайное число от 0 до max-1
 function getRandomInt(max) {
@@ -137,7 +140,7 @@ function generateLootboxJSON(
   var nft_hash = {
     //Имя токена = модификатор + "Lootbox"
     "name": nft_name,
-    "symbol": "",
+    "symbol": modSymbols[mod],
     //Описание токена
     "description": nft_name,
     //Комиссия которую получает создатель токена (игра), при вторичных продажах

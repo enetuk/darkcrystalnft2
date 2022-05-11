@@ -1,4 +1,5 @@
 const mpl_token_metadata_1 = require("../solana_integration/metaplex/js/node_modules/@metaplex-foundation/mpl-token-metadata");
+const anchor = require("../solana_integration/metaplex/js/node_modules/@project-serum/anchor");
 
 const mint_nft = require("../solana_integration/metaplex/js/packages/cli/build/commands/mint-nft");
 

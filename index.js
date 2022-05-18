@@ -176,7 +176,7 @@ commander.program
 
     .action(async (directory, cmd) => {
         //Получаем параметры запуска команды
-        const { keypair, env, url, collection, mod, fraction} = cmd.opts();
+        const { keypair, env, url, collection, mod, fraction, toWallet} = cmd.opts();
         console.log("Generate agent mod " + dark_metadata.modNames[parseInt(mod)] + " " + dark_metadata.fractionNames[parseInt(fraction)])
 
 

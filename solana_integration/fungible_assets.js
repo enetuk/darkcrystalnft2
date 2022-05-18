@@ -70,8 +70,6 @@ const mintAsset = async (connection, walletKeypair, metadataLink, mutableMetadat
         mint: mint.publicKey,
         mintAuthority: wallet.publicKey,
     }).instructions);
-    console.log("count:")
-    console.log(countSupply)
     instructions.push(spl_token_1.Token.createMintToInstruction(spl_token_1.TOKEN_PROGRAM_ID, mint.publicKey, userTokenAccoutAddress, wallet.publicKey, [], countSupply));
     // Create master edition
 /*

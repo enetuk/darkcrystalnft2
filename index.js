@@ -83,7 +83,10 @@ commander.program
         //Генерируем NFT-metadata
         dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, parseInt(mod),  dark_metadata.config["seller_fee_basis_points"]);
         console.log("mint NFT from metadata: " + dark_metadata.urlMetadata(gen_id, fname));
-        await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0);
+        var new_mint =await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0);
+        //Выводим адрес NFT
+        console.log("new mint address:" + new_mint.mint.toBase58());
+
 });
 
 
@@ -110,11 +113,127 @@ commander.program
         //Соединяемся с блокчейном
         const solConnection = new anchor.web3.Connection((0, various.getCluster)(env));
 
+
+        //Получаем баланс
+        var balance = await solConnection.getBalance(walletKeyPair.publicKey)
+        console.log("Balance: " + (balance / 1000000000).toString() + " SOL"); 
+
+
+
         let collectionKey;
         if (collection !== undefined) {
             console.log("collection: " + collection);
             collectionKey = new web3.PublicKey(collection);
         }
+
+        //Временная метка генерации
+        var gen_id = new Date().getTime();
+
+        //Цикл по видам лутбокса (обычный - эпический)
+        for(var mod=0; mod<dark_metadata.modChances.length; mod++){
+            var fname = "lootboxes" + mod;
+
+            var count = Math.round(countNft*dark_metadata.modChances[mod]);
+            if(count > 0){
+                console.log("Count NFT Lootboxes " + dark_metadata.modNames[parseInt(mod)] + ": " + count)
+                //Генерируем NFT-metadata
+                dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, parseInt(mod),  dark_metadata.config["seller_fee_basis_points"]);
+                //Минтим Fungible Assets
+
+                var new_mint = await (0, sft.mintAsset)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, count);
+                //Выводим адрес NFT
+                console.log("new mint address:" + new_mint.mint.toBase58());
+
+            };
+
+
+        };
+
+        //Получаем баланс
+        var new_balance = await solConnection.getBalance(walletKeyPair.publicKey)
+        console.log("Balance: " + (new_balance / 1000000000).toString() + " SOL (change: " + ((new_balance - balance)/1000000000) + " SOL)"); 
+
+  });
+
+//Генерация агента
+commanger.program
+    .command("generate_agent_nft")
+    //Сеть Solana: mainnet-beta, testnet, devnet
+    .option('-e, --env <string>', 'Solana cluster env name', 'devnet')
+    //Ключ кошелька
+    .requiredOption('-k, --keypair <path>', `Solana wallet location`, '--keypair not provided')
+    //Модификатор
+    .requiredOption("-m, --mod <number>")
+    //Фракция
+    /requiredOption("-f, --fraction <number>")
+    //Коллеция (PubKey). Коллекция - такой же NFT который должен быть сгенерирован
+    .option('-c, --collection <string>', 'Optional: Set this NFT as a part of a collection, Note you must be the update authority for this to work.')
+    .action(async (directory, cmd) => {
+        //Получаем параметры запуска команды
+        const { keypair, env, url, collection, mod, fraction} = cmd.opts();
+        console.log("Generate agent mod " + dark_metadata.modNames[parseInt(mod)] + " " + dark_metadata.fractionNames[parseInt(fraction)])
+
+
+        //Соединяемся с блокчейном        
+        const solConnection = new anchor.web3.Connection((0, various.getCluster)(env));
+        //Коллекция
+        let collectionKey;
+        if (collection !== undefined) {
+            collectionKey = new web3.PublicKey(collection);
+        }
+        //Объект с кошельком из файла с ключем
+        const walletKeyPair = (0, accounts.loadWalletKey)(keypair);
+
+
+        console.log("Generate NFT for " + walletKeyPair.publicKey.toBase58());
+        //Временная метка генерации (можно сделать синхронизацию с БД по ID в БД, а не использовать время)
+        var gen_id = new Date().getTime();
+        //Имя файла
+        var fname = "agent" + mod + "_0";
+        //Генерируем NFT-metadata
+        dark_metadata.generateAgentJSON(walletKeyPair.publicKey.toBase58(), dark_metadata.pathImage(gen_id, fname), dark_metadata.urlImage(gen_id, fname) , parseInt(fraction), parseInt(mod), dark_metadata.config["seller_fee_basis_points"], dark_metadata.pathMetadata(gen_id, fname));
+
+        console.log("mint NFT from metadata: " + dark_metadata.urlMetadata(gen_id, fname));
+        var new_mint = await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0);
+       
+        //Выводим адрес NFT
+        console.log("new mint address:" + new_mint.mint.toBase58());
+
+
+});
+
+//Ниже старые версии
+//Старая версия! Генерирование nft-лутбоксов по нужным вероятностям в количестве --cont-nft как NFT
+commander.program
+    .command("create_lootboxes_as_nft")
+    //Сеть Solana: mainnet-beta, testnet, devnet
+    .option('-e, --env <string>', 'Solana cluster env name', 'devnet')
+    //Ключ кошелька
+    .requiredOption('-k, --keypair <path>', `Solana wallet location`, '--keypair not provided')
+    //Количество лутбоксов
+    .requiredOption("-cn, --count-nft <number>")
+    //Коллеция (PubKey). Коллекция - такой же NFT который должен быть сгенерирован
+    .option('-c, --collection <string>', 'Optional: Set this NFT as a part of a collection, Note you must be the update authority for this to work.')
+
+    .action(async (directory, cmd) => {
+        //Получаем параметры запуска команды
+        const { keypair, env, collection, countNft} = cmd.opts();
+        console.log("Generate " + countNft + " lootboxes...");
+        //Объект с кошельком из файла с ключем
+        const walletKeyPair = (0, accounts.loadWalletKey)(keypair);
+        //Временная метка генерации
+        var gen_id = new Date().getTime();
+        //Соединяемся с блокчейном
+        const solConnection = new anchor.web3.Connection((0, various.getCluster)(env));
+
+        let collectionKey;
+        if (collection !== undefined) {
+            console.log("collection: " + collection);
+            collectionKey = new web3.PublicKey(collection);
+        }
+        //Получаем баланс
+        var balance = await solConnection.getBalance(walletKeyPair.publicKey)
+        console.log("Balance: " + (balance / 1000000000).toString() + " SOL"); 
 
         //Цикл по видам лутбокса (обычный - эпический)
         for(var mod=0; mod<dark_metadata.modChances.length; mod++){
@@ -125,20 +244,25 @@ commander.program
                 //Геренируем metadata
                 dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, mod, dark_metadata.config["seller_fee_basis_points"]);
                 console.log("mint NFT from metadata: " + dark_metadata.urlMetadata(gen_id, fname));
-                await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0);
-
-
-
+                //Минтим NFT
+                var new_mint = await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0);
+                //Выводим адрес NFT
+                console.log("new mint address:" + new_mint.mint.toBase58());
 
             };
 
         };
-  });
+        //Получаем баланс
+        var new_balance = await solConnection.getBalance(walletKeyPair.publicKey)
+        console.log("Balance: " + (new_balance / 1000000000).toString() + " SOL (change: " + ((new_balance - balance)/1000000000) + " SOL)"); 
+
+
+});
 
 
 //Открытие лутбокса
 commander.program
-    .command("open_lootbox")
+    .command("open_lootbox_as_nft")
     //Сеть Solana: mainnet-beta, testnet, devnet
     .option('-e, --env <string>', 'Solana cluster env name', 'devnet')
     //Ключ кошелька

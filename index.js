@@ -183,7 +183,7 @@ commander.program
         let collectionKey;
         if (collection !== undefined) {
             collectionKey = new web3.PublicKey(collection);
-            console.log("collection: ": +collection)
+            console.log("collection: " + collection)
         }
         //Объект с кошельком из файла с ключем
         const walletKeyPair = (0, accounts.loadWalletKey)(keypair);

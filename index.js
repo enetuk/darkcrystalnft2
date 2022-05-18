@@ -7,6 +7,8 @@ const commander = require("./solana_integration/metaplex/js/packages/cli/node_mo
 const web3 = require("./solana_integration/metaplex/js/node_modules/@solana/web3.js");
 const mpl_token_metadata = require("./solana_integration/metaplex/js/node_modules/@metaplex-foundation/mpl-token-metadata");
 
+const sft = require("./solana_integration/fungible_assets.js")
+
 
 //Work with files
 const fs = require("fs");

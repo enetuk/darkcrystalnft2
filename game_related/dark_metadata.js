@@ -443,6 +443,14 @@ function generateAgentJSON(
     nft_hash["attributes"].push({"trait_type": key,  "value": attributes[key]});
   });
 
+
+  var fs = require('fs');
+  //Создаем директорию (если нет)
+  var dir = require('path').dirname(filename);
+  if(!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+  };
+
   //Сохраняем в файл JSON с информацией об агенте
   fs.writeFileSync(filename, JSON.stringify(nft_hash), 'utf8');
   //metadata = JSON.parse(fs.readFileSync(metadataLink));

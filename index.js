@@ -164,9 +164,9 @@ commander.program
     //Ключ кошелька
     .requiredOption('-k, --keypair <path>', `Solana wallet location`, '--keypair not provided')
     //Модификатор
-    .requiredOption("-m, --mod <number>")
+    .requiredOption("-m, --mod <number>", `Mod`, '--mod not provided')
     //Фракция
-    /requiredOption("-f, --fraction <number>")
+    .requiredOption("-f, --fraction <number>", `Fraction`, '--fraction not provided')
     //Коллеция (PubKey). Коллекция - такой же NFT который должен быть сгенерирован
     .option('-c, --collection <string>', 'Optional: Set this NFT as a part of a collection, Note you must be the update authority for this to work.')
     .action(async (directory, cmd) => {

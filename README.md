@@ -37,7 +37,7 @@ cd ~/darkcrystalnft2/ && node index.js create_lootboxes --keypair ~/.config/sola
 
 
 ```bash
-cd ~/darkcrystalnft2/ && node index.js generate_agent_nft --keypair ~/.config/solana/id.json  --mod 1 --fraction 1
+cd ~/darkcrystalnft2/ && node index.js generate_agent_nft --keypair ~/.config/solana/id.json  --mod 1 --fraction 1  --to-wallet <адрес получателя NFT>
 ```
 
 

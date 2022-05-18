@@ -171,6 +171,9 @@ commander.program
     .requiredOption("-f, --fraction <number>", `Fraction`, '--fraction not provided')
     //Коллеция (PubKey). Коллекция - такой же NFT который должен быть сгенерирован
     .option('-c, --collection <string>', 'Optional: Set this NFT as a part of a collection, Note you must be the update authority for this to work.')
+    //Получатель NFT (кому его перевести после минтинга)
+    .option('-w, --to-wallet <string>', 'Optional: Wallet to receive nft. Defaults to keypair public key')
+
     .action(async (directory, cmd) => {
         //Получаем параметры запуска команды
         const { keypair, env, url, collection, mod, fraction} = cmd.opts();
@@ -185,6 +188,12 @@ commander.program
             collectionKey = new web3.PublicKey(collection);
             console.log("collection: " + collection)
         }
+        //Получатель NFT
+        let receivingWallet;
+        if (toWallet) {
+            receivingWallet = new web3_js_1.PublicKey(toWallet);
+        }
+
         //Объект с кошельком из файла с ключем
         const walletKeyPair = (0, accounts.loadWalletKey)(keypair);
 
@@ -198,7 +207,7 @@ commander.program
         dark_metadata.generateAgentJSON(walletKeyPair.publicKey.toBase58(), dark_metadata.pathImage(gen_id, fname), dark_metadata.urlImage(gen_id, fname) , parseInt(fraction), parseInt(mod), dark_metadata.config["seller_fee_basis_points"], dark_metadata.pathMetadata(gen_id, fname));
 
         console.log("mint NFT from metadata: " + dark_metadata.urlMetadata(gen_id, fname));
-        var new_mint = await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0);
+        var new_mint = await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0, null, null, receivingWallet);
        
         //Выводим адрес NFT
         console.log("new mint address:" + new_mint.mint.toBase58());

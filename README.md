@@ -29,11 +29,17 @@ cd ~/darkcrystalnft2/ && node index.js create_lootbox --keypair ~/.config/solana
 cd ~/darkcrystalnft2/ && node index.js create_lootboxes --keypair ~/.config/solana/id.json  --count-nft 4
 ```
 
-> Открыть лутбокс с адресом --mint-address
+> Генерация агента
+
+Модификатор: 0 - обычный, 1 - редкий, 2 - легендарный, 3 - эпический
+
+Фракция: 0 - Комитет, 1 - Пикник, 2 - Церковь, 3 - Фаланга, 4 - Хлыщи
+
 
 ```bash
-cd ~/darkcrystalnft2/ && node index.js open_lootbox --keypair ~/.config/solana/id.json  --mint-address 
+cd ~/darkcrystalnft2/ && node index.js generate_agent_nft --keypair ~/.config/solana/id.json  --mod 1 --fraction 1
 ```
+
 
 
 

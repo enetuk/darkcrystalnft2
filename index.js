@@ -191,7 +191,7 @@ commander.program
         //Получатель NFT
         let receivingWallet;
         if (toWallet) {
-            receivingWallet = new web3_js_1.PublicKey(toWallet);
+            receivingWallet = new web3.PublicKey(toWallet);
         }
 
         //Объект с кошельком из файла с ключем

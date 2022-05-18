@@ -153,10 +153,11 @@ commander.program
         var new_balance = await solConnection.getBalance(walletKeyPair.publicKey)
         console.log("Balance: " + (new_balance / 1000000000).toString() + " SOL (change: " + ((new_balance - balance)/1000000000) + " SOL)"); 
 
-  });
+});
+
 
 //Генерация агента
-commanger.program
+commander.program
     .command("generate_agent_nft")
     //Сеть Solana: mainnet-beta, testnet, devnet
     .option('-e, --env <string>', 'Solana cluster env name', 'devnet')

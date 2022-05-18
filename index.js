@@ -232,7 +232,7 @@ commander.program
 
         let collectionKey;
         if (collection !== undefined) {
-            console.log("collection: " + collection);
+            console.log("collection:  " + collection);
             collectionKey = new web3.PublicKey(collection);
         }
         //Получаем баланс

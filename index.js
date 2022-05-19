@@ -138,7 +138,7 @@ commander.program
 
             var count = Math.round(countNft*dark_metadata.modChances[mod]);
             if(count > 0){
-                console.log("Count NFT Lootboxes " + dark_metadata.modNames[parseInt(mod)] + ": " + count)
+                console.log("Count  " + dark_metadata.modNames[parseInt(mod)] + " Lootboxes: " + count)
                 //Генерируем NFT-metadata
                 dark_metadata.generateLootboxJSON(walletKeyPair.publicKey.toBase58(), gen_id, fname, parseInt(mod),  dark_metadata.config["seller_fee_basis_points"]);
                 //Минтим Fungible Assets
@@ -146,6 +146,12 @@ commander.program
                 var new_mint = await (0, sft.mintAsset)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, count);
                 //Выводим адрес NFT
                 console.log("new mint address:" + new_mint.mint.toBase58());
+
+                //Подтверждаем колллекцию
+                if (collection !== undefined) {
+                    console.log("Verify collection...")
+                    await (0, mint_nft.verifyCollection)(new_mint.mint, solConnection, walletKeyPair, collectionKey);
+                };
 
             };
 

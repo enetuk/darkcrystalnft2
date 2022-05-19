@@ -232,7 +232,7 @@ commander.program
     .option('-c, --collection <string>', 'Optional: Set this NFT as a part of a collection, Note you must be the update authority for this to work.')
     .action(async (directory, cmd) => {
         //Получаем параметры запуска команды
-        const { keypair, env, url, name, desc} = cmd.opts();
+        const { keypair, env, url, name, desc, collection} = cmd.opts();
 
         //Соединяемся с блокчейном
         const solConnection = new anchor.web3.Connection((0, various.getCluster)(env));

@@ -117,6 +117,106 @@ function genNFTLootboxImage(mod, nft_hash, image_filename){
 }
 
 
+
+//Ф-я для демонстрации. Генерация изображения NFT-коллекции
+function genNFTCollectionImage(name, image_filename){
+  var  canvas = createCanvas(400, 400);
+  var ctx = canvas.getContext("2d");
+  ctx.fillStyle = "orange";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "white";
+  ctx.font = "24px serif";
+  ctx.fillText(name, 20, 100);
+
+  //Сохраняем изображение
+  fs.writeFileSync(
+    image_filename,
+    canvas.toBuffer("image/png")
+  );
+
+
+}
+
+//Ф-я для демонстрации. Генерация изображения NFT-агента
+
+function genNFTAgentImage(nft_hash, image_filename){
+
+  var  canvas = createCanvas(400, 400);
+  var ctx = canvas.getContext("2d");
+  ctx.fillStyle = "blue";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "white";
+  ctx.font = "24px serif";
+  ctx.fillText(nft_hash["name"], 20, 100);
+
+  //Сохраняем изображение
+  fs.writeFileSync(
+    image_filename,
+    canvas.toBuffer("image/png")
+  );
+
+};
+
+
+
+//Создание коллекции
+exports.generateCollectionJSON = generateCollectionJSON;
+
+function generateCollectionJSON(
+  nft_name,//Название коллекции
+  description,//Описание
+  creator_pub_key,//адрес создателя
+  gen_id,//id-генерации (уникальное значение, временная метка или можно брать из связанно записи в БД)
+  fname,//Имя файла (без расширения)
+  //Комиссия создателя, 100 = 1%
+  seller_fee_basis_points
+){
+  //Заполняем свойства NFT-токена
+  var nft_hash = {
+    //Имя токена = модификатор + "Lootbox"
+    "name": nft_name,
+    //Описание токена
+    "description": description,
+    //Комиссия которую получает создатель токена (игра), при вторичных продажах
+    //Royalty basis points that goes to creators in secondary sales (0-10000).
+    "seller_fee_basis_points": seller_fee_basis_points,
+    //Изображение токена
+    "image": urlImage(gen_id, fname),
+    //Информация о создателе токена (кошелек игры)
+    "properties": {
+      "creators": [
+        {
+          "address": creator_pub_key,
+          "share": 100
+        }
+      ]
+    }
+  };
+
+  //Сохраняем в файл JSON с информацией об агенте
+  var fs = require('fs');
+  //Создаем директорию (если нет)
+  var dir = require('path').dirname(pathMetadata(gen_id, fname));
+  if(!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+  };
+
+  //Записываем файл 
+  fs.writeFileSync(pathMetadata(gen_id, fname), JSON.stringify(nft_hash), 'utf8');
+
+  //Для примера Генерируем изображение с изображением NFT,
+  //можно закомментировать если изображение уже есть по указанному пути
+  genNFTCollectionImage(nft_name, pathImage(gen_id, fname));
+
+
+
+
+  //log.info(nft_hash);
+  return nft_hash;
+
+};
+
+
 //Создание лутбокса
 exports.generateLootboxJSON = generateLootboxJSON;
 
@@ -456,21 +556,8 @@ function generateAgentJSON(
   //metadata = JSON.parse(fs.readFileSync(metadataLink));
 
   //Генерируем изображение
+  genNFTAgentImage(nft_hash, image_filename)
 
-
-  var  canvas = createCanvas(400, 400);
-  var ctx = canvas.getContext("2d");
-  ctx.fillStyle = "blue";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "white";
-  ctx.font = "24px serif";
-  ctx.fillText(nft_hash["name"], 20, 100);
-
-  //Сохраняем изображение
-  fs.writeFileSync(
-    image_filename,
-    canvas.toBuffer("image/png")
-  );
 
 
   //log.info(nft_hash);

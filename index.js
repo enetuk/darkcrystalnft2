@@ -7,6 +7,7 @@ const commander = require("./solana_integration/metaplex/js/packages/cli/node_mo
 const web3 = require("./solana_integration/metaplex/js/node_modules/@solana/web3.js");
 const mpl_token_metadata = require("./solana_integration/metaplex/js/node_modules/@metaplex-foundation/mpl-token-metadata");
 
+
 const sft = require("./solana_integration/fungible_assets.js")
 
 
@@ -158,6 +159,7 @@ commander.program
 });
 
 
+
 //Генерация агента
 commander.program
     .command("generate_agent_nft")
@@ -215,6 +217,53 @@ commander.program
 
 });
 
+//Создание коллекции
+commander.program
+    .command("create_collection")
+    //Сеть Solana: mainnet-beta, testnet, devnet
+    .option('-e, --env <string>', 'Solana cluster env name', 'devnet')
+    //Ключ кошелька
+    .requiredOption('-k, --keypair <path>', `Solana wallet location`, '--keypair not provided')
+    //Название коллекции
+    .requiredOption('-n, --name <string>', `Collection Name`, '--name not provided')
+    //Описание коллекции
+    .requiredOption('-d, --desc <string>', `Collection Description`, '--desc not provided')
+    .action(async (directory, cmd) => {
+        //Получаем параметры запуска команды
+        const { keypair, env, url, name, desc} = cmd.opts();
+
+        //Соединяемся с блокчейном
+        const solConnection = new anchor.web3.Connection((0, various.getCluster)(env));
+
+        //Объект с кошельком из файла с ключем
+        const walletKeyPair = (0, accounts.loadWalletKey)(keypair);
+
+
+
+
+        console.log("Generate collection " + name)
+
+        //Временная метка генерации
+        var gen_id = new Date().getTime();
+
+        var fname = "collection";
+
+        //Генерируем json
+        dark_metadata.generateCollectionJSON(name, desc, walletKeyPair.publicKey.toBase58(), gen_id, fname, dark_metadata.config["seller_fee_basis_points"])
+
+        console.log("mint NFT from metadata: " + dark_metadata.urlMetadata(gen_id, fname));
+        var new_mint = await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0);
+       
+        //Выводим адрес NFT
+        console.log("new mint address:" + new_mint.mint.toBase58());
+
+
+
+
+});
+
+
+
 //Ниже старые версии
 //Старая версия! Генерирование nft-лутбоксов по нужным вероятностям в количестве --cont-nft как NFT
 commander.program
@@ -262,6 +311,10 @@ commander.program
                 //Выводим адрес NFT
                 console.log("new mint address:" + new_mint.mint.toBase58());
 
+                //Подтверждаем колллекцию
+                if (collection !== undefined) {
+                    await (0, mint_nft.verifyCollection)(new_mint.mint, solConnection, walletKeyPair, collectionKey);
+                };
             };
 
         };

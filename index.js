@@ -93,40 +93,7 @@ commander.program
 });
 
 
-//Генерирование nft-лутбоксов по нужным вероятностям в количестве --cont-nft
-commander.program
-    .command("update_collection")
-    //Сеть Solana: mainnet-beta, testnet, devnet
-    .option('-e, --env <string>', 'Solana cluster env name', 'devnet')
-    //Ключ кошелька
-    .requiredOption('-k, --keypair <path>', `Solana wallet location`, '--keypair not provided')
-    //Адрес NFT
-    .requiredOption("-m, --mint <address>", `NFT Mint Address`, '--mint not provided')
-    //Коллеция (PubKey). Коллекция - такой же NFT который должен быть сгенерирован
-    .requiredOption('-c, --collection <string>', 'Collection Address', '--collection not provided')
 
-    .action(async (directory, cmd) => {
-        //Получаем параметры запуска команды
-        const { keypair, env, collection, mint} = cmd.opts();
-        //Объект с кошельком из файла с ключем
-        const walletKeyPair = (0, accounts.loadWalletKey)(keypair);
-        //Временная метка генерации
-        var gen_id = new Date().getTime();
-        //Соединяемся с блокчейном
-        const solConnection = new anchor.web3.Connection((0, various.getCluster)(env));
-
-
-        console.log("Set collection " + collection + " for NFT " + " mint");
-
-
-
-        collectionKey = new web3.PublicKey(collection);
-        mintKey = new web3.PublicKey(mint);
-
-        await (0, mint_nft.verifyCollection)(mintKey, solConnection, walletKeyPair, collectionKey);
-
-
-});
 
 //Генерирование nft-лутбоксов по нужным вероятностям в количестве --cont-nft
 commander.program

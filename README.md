@@ -47,10 +47,4 @@ cd ~/darkcrystalnft2/ && node index.js create_collection --keypair ~/.config/sol
 ```
 
 
-> Установить коллекцию для NFT
-
-```bash
-cd ~/darkcrystalnft2/ && node index.js update_collection --keypair ~/.config/solana/id.json  --mint <адрес NFT> --collection <адрес коллекции>
-```
-
 

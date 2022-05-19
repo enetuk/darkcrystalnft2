@@ -210,6 +210,14 @@ commander.program
 
         console.log("mint NFT from metadata: " + dark_metadata.urlMetadata(gen_id, fname));
         var new_mint = await (0, mint_nft.mintNFT)(solConnection, walletKeyPair, dark_metadata.urlMetadata(gen_id, fname), true, collectionKey, 0, null, null, receivingWallet);
+
+
+        //Подтверждаем колллекцию
+        if (collection !== undefined) {
+            console.log("Verify collection...")
+            await (0, mint_nft.verifyCollection)(new_mint.mint, solConnection, walletKeyPair, collectionKey);
+        };
+
        
         //Выводим адрес NFT
         console.log("new mint address:" + new_mint.mint.toBase58());

@@ -37,9 +37,20 @@ cd ~/darkcrystalnft2/ && node index.js create_lootboxes --keypair ~/.config/sola
 
 
 ```bash
-cd ~/darkcrystalnft2/ && node index.js generate_agent_nft --keypair ~/.config/solana/id.json  --mod 1 --fraction 1  --to-wallet <адрес получателя NFT>
+cd ~/darkcrystalnft2/ && node index.js generate_agent_nft --keypair ~/.config/solana/id.json  --mod 1 --fraction 1 --collection <адрес коллекции>  --to-wallet <адрес получателя NFT>
+```
+
+> Геренация коллекции
+
+```bash
+cd ~/darkcrystalnft2/ && node index.js create_collection --keypair ~/.config/solana/id.json  --name <название> --desc <описание>
 ```
 
 
+> Установить коллекцию для NFT
+
+```bash
+cd ~/darkcrystalnft2/ && node index.js update_collection --keypair ~/.config/solana/id.json  --mint <адрес NFT> --collection <адрес коллекции>
+```
 
 

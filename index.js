@@ -240,7 +240,12 @@ commander.program
         //Объект с кошельком из файла с ключем
         const walletKeyPair = (0, accounts.loadWalletKey)(keypair);
 
-
+        //Коллекция
+        let collectionKey;
+        if (collection !== undefined) {
+            collectionKey = new web3.PublicKey(collection);
+            console.log("collection: " + collection)
+        }
 
 
         console.log("Generate collection " + name)

@@ -123,7 +123,7 @@ commander.program
         collectionKey = new web3.PublicKey(collection);
         mintKey = new web3.PublicKey(mint);
 
-        await (0, mint_nft.verifyCollection)(new_mint.mint, solConnection, walletKeyPair, collectionKey);
+        await (0, mint_nft.verifyCollection)(mintKey, solConnection, walletKeyPair, collectionKey);
 
 
 });

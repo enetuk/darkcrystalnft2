@@ -175,6 +175,7 @@ function generateCollectionJSON(
   var nft_hash = {
     //Имя токена = модификатор + "Lootbox"
     "name": nft_name,
+    "symbol": "",
     //Описание токена
     "description": description,
     //Комиссия которую получает создатель токена (игра), при вторичных продажах
